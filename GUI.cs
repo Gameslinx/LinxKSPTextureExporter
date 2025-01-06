@@ -59,7 +59,8 @@ namespace LinxTextureExporter
                 exportColor = true,
                 exportHeight = true,
                 exportNormal = true,
-                multithread = true
+                multithread = true,
+                numThreads = SystemInfo.processorCount - 1,
             };
 
             // Register events
@@ -132,7 +133,9 @@ namespace LinxTextureExporter
 
             if (exportOptions.multithread)
             {
-                exportOptions.numThreads = Mathf.Max(SystemInfo.processorCount - 1, 1);
+                ParamCreator.CreateParam(" - Thread Count", ref exportOptions.numThreads, GUIHelperFunctions.IntField, null);
+                GUILayout.Label(" - - Capped at system thread count minus 1");
+                exportOptions.numThreads = Mathf.Clamp(exportOptions.numThreads, 1, SystemInfo.processorCount - 1);
             }
             else
             {

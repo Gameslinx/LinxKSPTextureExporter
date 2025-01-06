@@ -1,5 +1,6 @@
 ﻿using FinePrint.Utilities;
 using Kopernicus.Components.ModularScatter;
+using Kopernicus.OnDemand;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -101,8 +102,6 @@ namespace NormalExporter
 
             float[] threadProgress = new float[numTasks];
 
-            //PQSMod_VertexColorMap originalColorMap = (PQSMod_VertexColorMap)pqs.mods.FirstOrDefault((x) => x.GetType() == typeof(PQSMod_VertexColorMap));
-
             // Per thread data
             for (int i = 0; i < numTasks; i++)
             {
@@ -120,7 +119,6 @@ namespace NormalExporter
                             if (pqs2.name.Contains("Ocean"))
                             {
                                 Debug.Log("Destroyed ocean");
-                                //Destroy(pqs2);
                                 pqs2.enabled = false;
                             }
                         }
@@ -432,6 +430,8 @@ namespace NormalExporter
 
             return outputPixels;
         }
+        // Instantiate, don't trust it, so just blindly copy everything over and hope for the best
+        // Seems to work so far including anything inheriting from MapSO
         static void CloneAllMapSO(PQS original, PQS pqs)
         {
             pqs.mods = original.mods.Clone() as PQSMod[];
@@ -442,32 +442,58 @@ namespace NormalExporter
 
                 foreach (var field in modType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
                 {
-                    if (field.FieldType == typeof(MapSO))
+                    if (typeof(MapSO).IsAssignableFrom(field.FieldType))
                     {
                         var originalMapSO = (MapSO)field.GetValue(mod);
+
                         if (originalMapSO != null)
                         {
                             MapSO clonedMapSO = Instantiate(originalMapSO);
                             field.SetValue(mod, clonedMapSO);
+
+                            CopyAllFieldsAndProperties(originalMapSO, clonedMapSO);
                         }
                     }
                 }
 
-                // Process properties
                 foreach (var property in modType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
                 {
-                    if (property.PropertyType == typeof(MapSO) && property.CanRead && property.CanWrite)
+                    if (typeof(MapSO).IsAssignableFrom(property.PropertyType) && property.CanRead && property.CanWrite)
                     {
                         var originalMapSO = (MapSO)property.GetValue(mod);
+
                         if (originalMapSO != null)
                         {
                             MapSO clonedMapSO = Instantiate(originalMapSO);
                             property.SetValue(mod, clonedMapSO);
+
+                            CopyAllFieldsAndProperties(originalMapSO, clonedMapSO);
                         }
                     }
                 }
             }
+        }
 
+        static void CopyAllFieldsAndProperties(object source, object destination)
+        {
+            Type type = source.GetType();
+
+            // Copy fields
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+            {
+                var value = field.GetValue(source);
+                field.SetValue(destination, value);
+            }
+
+            // Copy properties
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+            {
+                if (property.CanRead && property.CanWrite)
+                {
+                    var value = property.GetValue(source);
+                    property.SetValue(destination, value);
+                }
+            }
         }
         static void DestroyAllMapSO(PQS pqs)
         {
@@ -478,7 +504,7 @@ namespace NormalExporter
 
                 foreach (var field in modType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
                 {
-                    if (field.FieldType == typeof(MapSO))
+                    if (typeof(MapSO).IsAssignableFrom(field.FieldType))
                     {
                         var originalMapSO = (MapSO)field.GetValue(mod);
                         if (originalMapSO != null)
@@ -491,7 +517,7 @@ namespace NormalExporter
                 // Process properties
                 foreach (var property in modType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
                 {
-                    if (property.PropertyType == typeof(MapSO) && property.CanRead && property.CanWrite)
+                    if (typeof(MapSO).IsAssignableFrom(property.PropertyType) && property.CanRead && property.CanWrite)
                     {
                         var originalMapSO = (MapSO)property.GetValue(mod);
                         if (originalMapSO != null)

@@ -2,7 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      <DebugSymbols>true</DebugSymbols>
+      <DebugType>portable</DebugType>
+      <Optimize>false</Optimize>
+      <GameDataPath>C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program-Old Parallax\GameData\</GameDataPath>
+      <OutDir>$(GameDataPath)</OutDir>
+      <ErrorReport>prompt</ErrorReport>
+      <WarningLevel>4</WarningLevel>
+      <NoWarn>0169</NoWarn>
+      <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+      <DefineConstants>TRACE;DEBUG;ENABLE_PROFILER</DefineConstants>
+    </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
@@ -43,9 +56,38 @@
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
 
-    <Publicize Include="Assembly-CSharp:PQS.mods" />
-    <Publicize Include="Assembly-CSharp:PQS.Mod_OnQuadDestroy" />
-    <Publicize Include="Assembly-CSharp:PQS.cache" />
+      <Publicize Include="Assembly-CSharp:PQ.PrecisePosition" />
+      <Publicize Include="Assembly-CSharp:PQS.cache" />
+      <Publicize Include="Assembly-CSharp:PQS.gameObject" />
+      <Publicize Include="Assembly-CSharp:PQS.vbData" />
+      <Publicize Include="Assembly-CSharp:PQS.targetPositionPrev" />
+      <Publicize Include="Assembly-CSharp:PQS.pqID" />
+      <Publicize Include="Assembly-CSharp:PQS.fixedUpdateFrame" />
+      <Publicize Include="Assembly-CSharp:PQS.maxLevel1" />
+      <Publicize Include="Assembly-CSharp:PQS.itr" />
+      <Publicize Include="Assembly-CSharp:PQS.mods" />
+
+      <Publicize Include="Assembly-CSharp:PQS.SetupMods" />
+      <Publicize Include="Assembly-CSharp:PQS.SetupBuildDelegates" />
+      <Publicize Include="Assembly-CSharp:PQS.Mod_OnSphereStart" />
+      <Publicize Include="Assembly-CSharp:PQS.UpdateVisual" />
+      <Publicize Include="Assembly-CSharp:PQS.UpdateQuadsInit" />
+      <Publicize Include="Assembly-CSharp:PQS.Mod_OnPostSetup" />
+      <Publicize Include="Assembly-CSharp:PQS.Mod_OnSphereStarted" />
+      <Publicize Include="Assembly-CSharp:PQS.StartSphere" />
+      <Publicize Include="Assembly-CSharp:PQS.UpdateSphere" />
+
+      <Publicize Include="UnityEngine.CoreModule:UnityEngine.Rendering.AsyncGPUReadbackRequest.GetDataRaw" />
+      
+      <Publicize Include="Kopernicus:Kopernicus.ShadowMan.ShadowRemoveFadeCommandBuffer.m_Buffer" />
+      <Publicize Include="Kopernicus:Kopernicus.ShadowMan.ShadowRemoveFadeCommandBuffer.m_Camera" />
+
+      <Publicize Include="Assembly-CSharp:Sun.scaledSunLight" />
+
+      <Publicize Include="Assembly-CSharp:MapSO.Byte2Float" />
+      <Publicize Include="Assembly-CSharp:MapSO._data" />
+      <Publicize Include="Assembly-CSharp:MapSO.PixelIndex" />
+      <Publicize Include="Assembly-CSharp" MemberPattern="^MapSO\..*" />
   </ItemGroup>
 
 </Project>

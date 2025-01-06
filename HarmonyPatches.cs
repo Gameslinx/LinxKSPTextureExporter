@@ -18,7 +18,6 @@ namespace LinxTextureExporter
         {
             if (TextureExporter.planetExportProgress > 0)
             {
-                Debug.Log("Skipped quad destroy");
                 return false;
             }
             if (quad == null)
@@ -29,12 +28,6 @@ namespace LinxTextureExporter
             {
                 return true;
             }
-            //__instance.Mod_OnQuadDestroy(quad);
-            //if (quad.isBuilt)
-            //{
-            //    // fucking nothing
-            //}
-            //__instance.cache.DestroyQuad(quad);
         }
     }
 
@@ -46,18 +39,11 @@ namespace LinxTextureExporter
         {
             if (TextureExporter.planetExportProgress > 0)
             {
-                Debug.Log("Skipped commnet stuff");
                 __instance.gameObject.SetActive(false);
                 UnityEngine.Object.Destroy(__instance);
                 return false;
             }
             return true;
-            //__instance.Mod_OnQuadDestroy(quad);
-            //if (quad.isBuilt)
-            //{
-            //    // fucking nothing
-            //}
-            //__instance.cache.DestroyQuad(quad);
         }
     }
 }
